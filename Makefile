@@ -34,7 +34,7 @@ FIG_SVGS    := $(patsubst $(FIG_TIKZ)/%.tex, $(FIG_BUILD)/%.svg, $(TIKZ_SRCS))
 
 # ── Phony Targets ────────────────────────────────────────────────────────────
 # Explicitly declaring pseudo-targets to prevent conflicts with matching file names.
-.PHONY: all figures pdf pdf-full html watch clean distclean figures-clean help
+.PHONY: all figures pdf html watch clean clean-build clean-figures clean-tex help
 
 # Default target: Compiles everything (Graphics -> PDF -> HTML)
 all: figures pdf html
@@ -62,20 +62,12 @@ $(FIG_BUILD)/%.svg: $(FIG_BUILD)/%.pdf
 	$(PDF2SVG) $< $@
 
 # ── PDF Document Compilation ─────────────────────────────────────────────────
-# Standard double-pass target to resolve dynamic section headers and table of contents.
-pdf: figures | $(BUILD_DIR)/
-	@echo "  [PDF run 1] $(MAIN)"
-	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
-	@echo "  [PDF run 2] $(MAIN)"
-	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
-	@echo "  ✓ PDF generated: $(BUILD_DIR)/$(MAIN_BASE).pdf"
-
 # Full production pipeline including dynamic citation parsing via BibTeX (3 passes required)
-pdf-full: figures | $(BUILD_DIR)/
+pdf: figures | $(BUILD_DIR)/
 	@echo "  [PDF run 1]"
 	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
-	@echo "  [BibTeX]"
-	cd $(BUILD_DIR) && $(BIBTEX) $(MAIN_BASE)
+#   @echo "  [BibTeX]"
+#	cd $(BUILD_DIR) && $(BIBTEX) $(MAIN_BASE)
 	@echo "  [PDF run 2]"
 	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
 	@echo "  [PDF run 3]"
@@ -118,21 +110,24 @@ watch:
 
 # ── Cleanup Operations ───────────────────────────────────────────────────────
 # Deletes individual standalone graphics build directories.
-figures-clean:
+clean-figures:
 	@echo "  [clean]     Sub-directory $(FIG_BUILD)/"
 	rm -rf $(FIG_BUILD)
 
 # Deletes document compilation output.
-clean:
+clean-build:
 	@echo "  [clean]     Sub-directory $(BUILD_DIR)/"
 	rm -rf $(BUILD_DIR)
 
 # Radical cleanup removing all compiled targets and miscellaneous TeX log artifacts.
-distclean: clean figures-clean
+clean-tex:
 	@echo "  [clean]     Residual LaTeX workspace artifacts"
 	rm -f $(SRC_DIR)/*.aux $(SRC_DIR)/*.log $(SRC_DIR)/*.toc \
 	      $(SRC_DIR)/*.out $(SRC_DIR)/*.lof $(SRC_DIR)/*.lot \
 	      $(SRC_DIR)/*.xml $(SRC_DIR)/*.html $(SRC_DIR)/*.css
+
+clean: clean-tex clean-build clean-figures
+	@echo "  [clean]     Finished"
 
 # ── Documented Interface Helper ──────────────────────────────────────────────
 # Prints explicit usage hints when executing plain 'make help'.
@@ -142,11 +137,11 @@ help:
 	@echo "  ─────────────────────────────────────────────"
 	@echo "  make                Compiles assets, print PDF, and accessible HTML5"
 	@echo "  make figures        Compiles standalone TikZ assets only (PDF + SVG)"
-	@echo "  make pdf            Generates print document natively (2 LaTeX passes)"
-	@echo "  make pdf-full       Generates print document with active BibTeX citations"
+	@echo "  make pdf            Generates print document with active BibTeX citations"
 	@echo "  make html           Generates web asset targets only (via LaTeXML parsing)"
 	@echo "  make watch          Monitors workspace files and live-rebuilds via 'entr'"
-	@echo "  make clean          Purges the main document build directory ($(BUILD_DIR)/)"
-	@echo "  make figures-clean  Purges the vector graphics build directory ($(FIG_BUILD)/)"
-	@echo "  make distclean      Complete workspace wipe including localized cached files"
+	@echo "  make clean    		 Complete workspace purge including any cached files"
+	@echo "  make clean-build    Purges the main document build directory ($(BUILD_DIR)/)"
+	@echo "  make clean-figures  Purges the vector graphics build directory ($(FIG_BUILD)/)"
+	@echo "  make clean-tex      Purges cached files in source directory ($(SRC_DIR)/)"
 	@echo ""
