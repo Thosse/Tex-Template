@@ -8,6 +8,8 @@
 # Organizing the project structure to keep source files and build artifacts separate.
 SRC_DIR     := src
 BUILD_DIR   := build
+RESULT_DIR  := res
+HTML_DIR    := $(RESULT_DIR)/html
 FIG_TIKZ    := figures/tikz
 FIG_BUILD   := figures/build
 SCRIPTS_DIR := scripts
@@ -41,11 +43,10 @@ all: figures pdf html
 
 # ── Directory Generation ─────────────────────────────────────────────────────
 # Order-only prerequisites ensuring directories exist before compilation starts.
-$(BUILD_DIR)/:
+# Automatically matches any path ending in a slash and creates it on demand.
+%/:
 	mkdir -p $@
 
-$(FIG_BUILD)/:
-	mkdir -p $@
 
 # ── Graphics Pipeline ────────────────────────────────────────────────────────
 # Meta-target processing all externalized standalone TikZ assets.
@@ -63,31 +64,28 @@ $(FIG_BUILD)/%.svg: $(FIG_BUILD)/%.pdf
 
 # ── PDF Document Compilation ─────────────────────────────────────────────────
 # Full production pipeline including dynamic citation parsing via BibTeX (3 passes required)
-pdf: figures | $(BUILD_DIR)/
+pdf: figures | $(BUILD_DIR)/ $(RESULT_DIR)/
 	@echo "  [PDF run 1]"
-	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
+	$(PDFLATEX) -output-directory $(BUILD_DIR) $(SRC_DIR)/$(MAIN_BASE).tex
 #   @echo "  [BibTeX]"
 #	cd $(BUILD_DIR) && $(BIBTEX) $(MAIN_BASE)
 	@echo "  [PDF run 2]"
-	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
+	$(PDFLATEX) -output-directory $(BUILD_DIR) $(SRC_DIR)/$(MAIN_BASE).tex
 	@echo "  [PDF run 3]"
-	cd $(SRC_DIR) && $(PDFLATEX) -output-directory ../$(BUILD_DIR) $(MAIN_BASE).tex
+	$(PDFLATEX) -output-directory $(BUILD_DIR) $(SRC_DIR)/$(MAIN_BASE).tex
+	@# Copy the finished PDF up to the main build folder, leaving logs behind
+	@cp $(BUILD_DIR)/$(MAIN_BASE).pdf $(RESULT_DIR)/$(MAIN_BASE).pdf
 	@echo "  ✓ PDF (with BibTeX) generated: $(BUILD_DIR)/$(MAIN_BASE).pdf"
 
 # ── HTML5 Document Compilation (LaTeXML Pipeline) ───────────────────────────
 # Converts TeX sources into cross-platform accessible web files.
-html: figures | $(BUILD_DIR)/
+html: figures | $(BUILD_DIR)/ $(HTML_DIR)/
 	@echo "  [LaTeXML]   $(MAIN_BASE).tex"
-	@# Copy user stylesheet into the build directory
-	cp $(SCRIPTS_DIR)/custom.css $(BUILD_DIR)/custom.css
-
-	@# Copy mathjax.js into the build directory
-	cp $(SCRIPTS_DIR)/mathjax.js $(BUILD_DIR)/mathjax.js
-	
 	@# Stage 1: Parse LaTeX into semantically structured XML.
 	@# The babel bypass option is active to prevent standard package runtime crashes.
 	$(LATEXML) \
 		--dest=$(BUILD_DIR)/$(MAIN_BASE).xml \
+		--log=$(BUILD_DIR)/$(MAIN_BASE).latexml.log \
 		$(SRC_DIR)/$(MAIN_BASE).tex
 		
 	@# Stage 2: Transform XML to validated HTML5 markup.
@@ -95,9 +93,10 @@ html: figures | $(BUILD_DIR)/
 	@# Note: --css takes a path relative to the final HTML file location.
 	$(LATEXMLPOST) \
 		--format=html5 \
-		--css=$(BUILD_DIR)/custom.css \
-		--javascript=$(BUILD_DIR)/mathjax.js \
-		--dest=$(BUILD_DIR)/$(MAIN_BASE).html \
+		--css=$(SCRIPTS_DIR)/custom.css \
+		--javascript=$(SCRIPTS_DIR)/mathjax.js \
+		--log=$(BUILD_DIR)/$(MAIN_BASE).latexmlpost.log \
+		--dest=$(HTML_DIR)/$(MAIN_BASE).html \
 		$(BUILD_DIR)/$(MAIN_BASE).xml
 		
 	@echo "  ✓ HTML generated: $(BUILD_DIR)/$(MAIN_BASE).html"
@@ -117,7 +116,7 @@ clean-figures:
 # Deletes document compilation output.
 clean-build:
 	@echo "  [clean]     Sub-directory $(BUILD_DIR)/"
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(RESULT_DIR)
 
 # Radical cleanup removing all compiled targets and miscellaneous TeX log artifacts.
 clean-tex:

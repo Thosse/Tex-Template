@@ -11,3 +11,4 @@
 *.xref
 *.tmp
 **/build/*
+**/res/*
