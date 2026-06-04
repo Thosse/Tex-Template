@@ -88,6 +88,9 @@ html: figures | $(BUILD_DIR)/
 	@echo "  [LaTeXML]   $(MAIN_BASE).tex"
 	@# Copy user stylesheet into the build directory
 	cp $(SCRIPTS_DIR)/custom.css $(BUILD_DIR)/custom.css
+
+	@# Copy mathjax.js into the build directory
+	cp $(SCRIPTS_DIR)/mathjax.js $(BUILD_DIR)/mathjax.js
 	
 	@# Stage 1: Parse LaTeX into semantically structured XML.
 	@# The babel bypass option is active to prevent standard package runtime crashes.
@@ -101,7 +104,7 @@ html: figures | $(BUILD_DIR)/
 	$(LATEXMLPOST) \
 		--format=html5 \
 		--css=$(BUILD_DIR)/custom.css \
-		--javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
+		--javascript=$(BUILD_DIR)/mathjax.js \
 		--dest=$(BUILD_DIR)/$(MAIN_BASE).html \
 		$(BUILD_DIR)/$(MAIN_BASE).xml
 		
