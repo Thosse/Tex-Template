@@ -1,0 +1,108 @@
+/* ==========================================================================
+   custom.css — Modernes & responsives Design für LaTeXML-Dokumente
+   ========================================================================== */
+
+/* ── Globale Variablen & Fonts ────────────────────────────────────────── */
+:root {
+    --bg-color: #fcfcfc;
+    --text-color: #2c3e50;
+    --primary-color: #1a365d;   /* Dunkelblau für Überschriften */
+    --accent-color: #2b6cb0;    /* Blau für Links */
+    --code-bg: #f7fafc;
+    --border-color: #e2e8f0;
+    --max-width: 800px;
+}
+
+/* ── Basis-Layout ─────────────────────────────────────────────────────── */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* ── Typografie & Überschriften ───────────────────────────────────────── */
+h1, h2, h3, h4 {
+    color: var(--primary-color);
+    font-weight: 700;
+    column-break-after: avoid;
+    break-after: avoid;
+}
+
+h1 { font-size: 2.2rem; margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
+h2 { font-size: 1.6rem; margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
+h3 { font-size: 1.3rem; margin-top: 2rem; }
+
+p {
+    margin-bottom: 1.25rem;
+    text-align: justify;
+}
+
+/* ── Links ────────────────────────────────────────────────────────────── */
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--primary-color);
+}
+
+/* ── Inhaltsverzeichnis (TOC) ─────────────────────────────────────────── */
+.ltx_toclist {
+    list-style: none;
+    padding-left: 0;
+    background: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+}
+
+.ltx_tocentry {
+    margin-bottom: 0.5rem;
+}
+
+/* ── Tabellen (Responsive & Longtable-Fix) ────────────────────────────── */
+.ltx_page_main table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.95rem;
+}
+
+/* Wrapper für mobiles Scrollen, falls Tabellen zu breit sind */
+.ltx_table, .ltx_longtable {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: #edf2f7;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ── Mathematische Formeln (MathJax Zentrierung) ───────────────────────── */
+.ltx_equation, .ltx_equationgroup {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+/* ── Codeblöcke & Listings ────────────────
