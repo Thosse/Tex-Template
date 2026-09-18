@@ -1,5 +1,5 @@
 # ── Build Stage ──
-FROM debian:bookworm-slim
+FROM docker.io/library/debian:bookworm-slim
 
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive

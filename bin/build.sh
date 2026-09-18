@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-CONTAINER_NAME=latex-pipeline
+# cd:   Always run relative to the directory where this script lives,
+#       ensuring $(pwd) doesn't break if called from elsewhere.
+# exit: exit on failure
+cd "$(dirname "$0")/.." || exit 1
 
-
-# Change directory to the folder where this script lives (bin/)
-# and move one level up (..) into the project root folder.
-cd "$(dirname "$0")/.."
+source bin/detect_engine.sh
 
 # Build the Docker image using the Dockerfile in the root folder
-docker build -t $CONTAINER_NAME .
+$ENGINE build -t $CONTAINER_NAME .
