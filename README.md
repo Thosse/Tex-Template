@@ -1,117 +1,108 @@
-# LaTeX Dual-Output Workflow — Beispielprojekt
+# LaTeX Dual-Output Workflow
 
-Aus **einer einzigen `.tex`-Datei** werden sowohl ein **PDF** als auch
-eine **HTML-Seite** erzeugt.
+This project generates both a high-quality **PDF**
+and a modern, responsive **HTML5** document
+from a single unified LaTeX source file.
 
-## Voraussetzungen
 
-| Werkzeug | Paket (Ubuntu/Debian) | Zweck |
-|---|---|---|
-| `pdflatex` | `texlive-latex-base` | PDF-Erzeugung |
-| `make4ht` | `tex4ht` (in TeX Live) | HTML-Erzeugung |
-| `pdf2svg` | `pdf2svg` | TikZ-PDF → SVG |
-| `make` | `make` | Build-Steuerung |
-| `entr` *(optional)* | `entr` | Auto-Rebuild (`make watch`) |
+## Build Environments
+
+### Containerized Build (Docker / Podman)
+
+This is the recommended approach.
+It guarantees a reproducible environment without a massive TeX installation.
+The included scripts automatically detect and prioritize Podman over Docker,
+mapping your local user IDs to prevent permission conflicts.
+It requires Podman or Docker installed on your system.
+
+Build the container image via
 
 ```bash
-# Ubuntu/Debian Schnellinstall:
-sudo apt install texlive-full pdf2svg make entr
+./bin/build.sh
 ```
 
-## Projektstruktur
+Instead of calling make directly, you may pass any make commands to the run script:
+
+```bash
+./bin/run.sh all       # Builds figures, PDF, and HTML
+./bin/run.sh pdf       # Builds only the PDF
+./bin/run.sh clean     # Cleans the workspace
+...
+```
+
+### Local Native Build
+If you prefer building directly on your host system,
+you can use the Makefile natively.
+
+```bash
+make              # Builds figures, PDF, and HTML
+make figures      # Builds only standalone TikZ figures (PDF + SVG)
+make pdf          # Builds only the PDF (multiple LaTeX runs)
+make html         # Builds only the HTML (via LaTeXML)
+make watch        # Auto-rebuilds on file changes (requires 'entr')
+make clean        # Removes all build artifacts and directories
+make help         # Shows an overview of all available targets
+```
+
+The requirements are listed as in the Dockerfile.
+
+
+## Project Structure
 
 ```
-latex-workflow/
-├── Makefile
+latex-project/
+├── bin/                  ← Wrapper scripts (build.sh, run.sh, detect_engine.sh)
+├── Makefile              ← Defines the dual-output automation
 ├── src/
-│   └── main.tex          ← Einzige Quelldatei
+│   └── main.tex          ← Main LaTeX source document
 ├── figures/
-│   ├── tikz/             ← TikZ-Quellen (standalone)
-│   │   ├── graph.tex
-│   │   └── bfs.tex
-│   └── build/            ← Erzeugte PDFs + SVGs (git-ignorierbar)
-├── build/                ← Ausgabe: main.pdf, main.html, CSS
+│   ├── tikz/             ← Raw TikZ standalone files (.tex)
+│   └── build/            ← Compiled vector graphics (PDF & SVG)
+├── build/                ← Temporary build artifacts and logs
+├── res/
+│   ├── main.pdf          ← Final compiled PDF output
+│   └── html/             ← Final compiled HTML5 output
 └── scripts/
-    ├── make4ht.cfg       ← make4ht-Konfiguration (Lua)
-    └── custom.css        ← CSS für HTML-Ausgabe
+    ├── custom.css        ← CSS styling for LaTeXML HTML output
+    └── mathjax.js        ← MathJax configuration for equations
 ```
 
-## Verwendung
 
-```bash
-make              # Figuren + PDF + HTML bauen
-make figures      # nur TikZ-Figuren neu bauen
-make pdf          # nur PDF (2 LaTeX-Läufe)
-make html         # nur HTML (make4ht)
-make watch        # Auto-Rebuild bei Dateiänderung (entr)
-make clean        # build/ löschen
-make distclean    # + alle Temp-Dateien löschen
-make help         # Übersicht aller Targets
-```
+## How It Works
 
-## Wie es funktioniert
+### Dual-Output Detection
 
-### Dual-Output-Erkennung
-
-`main.tex` erkennt den Build-Modus über `\ifdefined\HCode`:
+`main.tex` can detect the active build mode to load specific packages or adjust formatting.
+When using LaTeXML, you can use its native conditional switch:
 
 ```latex
-\ifdefined\HCode
-  % → make4ht ist aktiv: keine PDF-only-Pakete laden
+\ifdefined\iflatexml
+  % → HTML build is active: skip PDF-only packages (like geometry, fancyhdr)
 \else
-  % → pdflatex: geometry, fancyhdr, microtype usw. laden
+  % → PDF build is active: load print-specific formatting
 \fi
 ```
 
-### TikZ-Figuren (Standalone-Ansatz)
+### TikZ Vector Graphics (Standalone Pipeline)
 
-Jede Figur ist ein eigenes Dokument mit `\documentclass{standalone}`.
-`make` baut daraus erst ein PDF, dann ein SVG:
+Each figure is maintained as an independent document in `figures/tikz/` .
+The build system processes these assets automatically:
 
-```
-figures/tikz/graph.tex
-    → pdflatex → figures/build/graph.pdf
-    → pdf2svg  → figures/build/graph.svg
-```
+1. Compiles the raw TikZ code into a cropped PDF (`pdflatex`).
+2. Converts the generated PDF into an optimized SVG for responsive web views (`pdf2svg`).
 
-Im Hauptdokument wird je nach Modus die richtige Datei eingebunden:
+Make caches the results; only modified `.tex` files are recompiled.
+
+To include a figure, simply omit the file ending.
+The correct file will be used (svg for html and pdf for pdf).
 
 ```latex
-\ifdefined\HCode
-  \includegraphics{../figures/build/graph.svg}
-\else
-  \includegraphics[width=0.45\textwidth]{../figures/build/graph.pdf}
-\fi
+\includegraphics{../figures/build/graph}
 ```
 
-Make cached: nur geänderte `.tex`-Dateien werden neu gebaut.
+### HTML5 Generation (LaTeXML)
 
-### HTML-Styling
-
-`scripts/custom.css` verwendet CSS-Variablen — einfach anpassbar:
-
-```css
-:root {
-  --color-primary: #2563EB;
-  --color-accent:  #7C3AED;
-  --max-width:     72ch;
-}
-```
-
-Dark Mode wird automatisch über `@media (prefers-color-scheme: dark)`
-unterstützt.
-
-## Neue TikZ-Figur hinzufügen
-
-1. Datei `figures/tikz/meinefigur.tex` erstellen
-   (mit `\documentclass[tikz, border=6pt]{standalone}`)
-2. Im Hauptdokument einbinden:
-   ```latex
-   \ifdefined\HCode
-     \includegraphics{../figures/build/meinefigur.svg}
-   \else
-     \includegraphics[width=0.6\textwidth]{../figures/build/meinefigur.pdf}
-   \fi
-   ```
-3. `make figures` oder einfach `make` ausführen —
-   Make erkennt die neue Datei automatisch über das Wildcard-Muster.
+The HTML target bypasses standard pdflatex compilation
+and instead parses the semantic structure of your .tex source using latexml.
+The intermediate XML is then transformed into validated HTML5 via latexmlpost,
+injecting custom.css for styling and linking MathJax for equation rendering.
