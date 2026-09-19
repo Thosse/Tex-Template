@@ -1,8 +1,14 @@
-% ---- Language Settings -------------------------------------------------------
-% \usepackage[english]{babel}   % English
-% \usepackage[ngerman]{babel}   % German
-% \usepackage[brazilian]{babel} % Brazilian Portuguese
-% \usepackage[italian]{babel}   % Italian
+% ---- Conditional Build Gatekeeper --------------------------------------------
+% 1. Define the flag natively so pdflatex knows it (defaults to false).
+\newif\iflatexml
+
+% 2. If the latexml package exists (which it always does during the HTML build),
+%    load it. It automatically sets \latexmltrue inside the LaTeXML engine.
+\IfFileExists{latexml.sty}
+{
+    \usepackage{latexml}
+}{}
+
 
 % ---- Core Layout & Typography ------------------------------------------------
 \usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}

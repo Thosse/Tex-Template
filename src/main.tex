@@ -3,6 +3,15 @@
 % ---- Load Shared Preamble ----------------------------------------------------
 \input{defaults/preamble.tex}
 
+% ---- Language Settings -------------------------------------------------------
+\iflatexml  % HTML BUILD (LaTeXML)
+\else       % PDF BUILD (pdflatex)
+    \usepackage[english]{babel}     % English
+    % \usepackage[ngerman]{babel}   % German
+    % \usepackage[brazilian]{babel} % Brazilian Portuguese
+    % \usepackage[italian]{babel}   % Italian
+\fi
+
 % ==============================================================================
 \begin{document}
 % ==============================================================================

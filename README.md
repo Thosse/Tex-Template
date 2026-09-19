@@ -51,20 +51,22 @@ The requirements are listed as in the Dockerfile.
 
 ```
 latex-project/
-├── bin/                  ← Wrapper scripts (build.sh, run.sh, detect_engine.sh)
-├── Makefile              ← Defines the dual-output automation
-├── src/
-│   └── main.tex          ← Main LaTeX source document
-├── figures/
-│   ├── tikz/             ← Raw TikZ standalone files (.tex)
-│   └── build/            ← Compiled vector graphics (PDF & SVG)
-├── build/                ← Temporary build artifacts and logs
-├── res/
-│   ├── main.pdf          ← Final compiled PDF output
-│   └── html/             ← Final compiled HTML5 output
-└── scripts/
-    ├── custom.css        ← CSS styling for LaTeXML HTML output
-    └── mathjax.js        ← MathJax configuration for equations
+├── .build/             ← Temporary hidden build artifacts and logs
+├── bin/                ← Wrapper scripts (build.sh, detect_engine.sh, run.sh)
+├── defaults/           ← Shared configurations and web assets
+│   ├── custom.css      ← CSS styling for HTML output
+│   ├── mathjax.js      ← MathJax configuration for equations
+│   └── preamble.tex    ← Dual-build gatekeeper and package imports
+├── result/             ← Final compiled outputs
+│   ├── html/           ← Final compiled PDF output
+│   └── main.pdf        ← Final compiled PDF output
+├── src/                ← Source files
+│   ├── figures/        ← Standalone TikZ figures and build output
+│   └── main.tex        ← Main LaTeX source document
+├── .gitignore          ← Git exclusion rules
+├── Dockerfile          ← Container build definition
+├── Makefile            ← Defines the dual-output automation
+└── README.md           ← Project documentation
 ```
 
 
@@ -72,14 +74,18 @@ latex-project/
 
 ### Dual-Output Detection
 
-`main.tex` can detect the active build mode to load specific packages or adjust formatting.
-When using LaTeXML, you can use its native conditional switch:
+LaTeXML struggles with complex LaTeX3 (expl3) macros or specific print layouts-
+Thus the workflow uses a robust \newif gatekeeper defined in defaults/preamble.tex.
+This safely routes package loading
+without causing compilation crashes in either environment:
+
+You can conditionally load problematic parts in the preamble or in the body with
 
 ```latex
-\ifdefined\iflatexml
-  % → HTML build is active: skip PDF-only packages (like geometry, fancyhdr)
-\else
-  % → PDF build is active: load print-specific formatting
+\iflatexml  % HTML BUILD (LaTeXML)
+    % Provide lightweight dummy macros here if needed
+\else       % PDF BUILD (pdflatex)
+    % This only applies to PDF Builds
 \fi
 ```
 
