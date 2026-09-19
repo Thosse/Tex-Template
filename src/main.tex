@@ -1,65 +1,7 @@
 \documentclass[a4paper, 12pt]{book}
 
-% ---- Language Settings -------------------------------------------------------
-\usepackage[english]{babel}     % English
-% \usepackage[ngerman]{babel}   % German
-% \usepackage[brazilian]{babel} % Brazilian Portuguese
-% \usepackage[italian]{babel}   % Italian
-
-% ---- Core Layout & Typography ------------------------------------------------
-\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
-                                % For page dimensions and margin settings
-\usepackage{fancyhdr}           % For custom headers and footers
-\usepackage{microtype}          % For improved typography, character spacing, and hyphenation
-\usepackage{amsmath, amssymb, amsthm}
-                                % For advanced math environments, theorems, and symbols
-\usepackage{graphicx}           % For including external images and graphics
-\usepackage{xcolor}             % For defining and using custom colors
-\graphicspath{{src/figures/.build/}}
-
-% ---- Text Formatting, Units & Lists ------------------------------------------
-\usepackage{enumitem}           % For precise control over list spacing and numbering
-\usepackage{nicefrac}           % For readable inline fractions
-
-% ---- Vector Graphics -------------------------------------------------
-\usepackage{tikz}               % For generic vector graphics and diagrams
-
-% ---- Music Notation & Layout -------------------------------------------------
-\usepackage{guitarchordschemes} % For vector guitar fretboard diagrams
-\usepackage{songs}              % For typesetting lyrics with chord anchors
-
-% ---- Hyperref & Cross-Referencing --------------------------------------------
-\usepackage{hyperref}           % For clickable links and digital bookmarks
-\usepackage{cleveref}           % Must be loaded immediately after hyperref
-
-% ---- Hyperref Setup ----------------------------------------------------------
-\hypersetup
-{
-    colorlinks = true,
-    linkcolor  = blue!60!black,
-    urlcolor   = red!70!black,
-}
-
-% ---- Forbidden Packages - Causing Issues with LateXML ------------------------
-% \usepackage{siunitx}            % For standardized scientific measurements and units
-% \usepackage{tcolorbox}          % For custom text boxes, callouts, and modular layouts
-% \usepackage{fontawesome5}       % For scalable vector icons
-
-% ---- Header/Footer Setup -----------------------------------------------------
-\setlength{\headheight}{15pt}
-\pagestyle{fancy}
-\fancyhf{}
-
-% Override the default chapter and section marks to remove prefix words
-\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
-\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
-
-% Header: Current Chapter on the left, Current Section on the right
-\fancyhead[L]{\small\leftmark}
-\fancyhead[R]{\small\rightmark}
-
-% Footer: Page number in the center
-\fancyfoot[C]{\thepage}
+% ---- Load Shared Preamble ----------------------------------------------------
+\input{defaults/preamble.tex}
 
 % ==============================================================================
 \begin{document}

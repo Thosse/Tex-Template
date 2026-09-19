@@ -12,7 +12,7 @@ RESULT_DIR  := result
 HTML_DIR    := $(RESULT_DIR)/html
 FIG_TIKZ    := src/figures/tikz
 FIG_BUILD   := src/figures/.build
-SCRIPTS_DIR := scripts
+SCRIPTS_DIR := defaults
 
 # Main document entry points
 
