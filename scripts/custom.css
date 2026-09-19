@@ -2,7 +2,7 @@
    custom.css — Modernes & responsives Design für LaTeXML-Dokumente
    ========================================================================== */
 
-/* ── Globale Variablen & Fonts ────────────────────────────────────────── */
+/* ── Globale Variablen & Fonts ───────────────────────────────────────────── */
 :root {
     --bg-color: #fcfcfc;
     --text-color: #2c3e50;
@@ -13,7 +13,7 @@
     --max-width: 800px;
 }
 
-/* ── Basis-Layout ─────────────────────────────────────────────────────── */
+/* ── Basis-Layout ────────────────────────────────────────────────────────── */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.7;
@@ -24,7 +24,7 @@ body {
     padding: 2rem 1.5rem;
 }
 
-/* ── Typografie & Überschriften ───────────────────────────────────────── */
+/* ── Typografie & Überschriften ──────────────────────────────────────────── */
 h1, h2, h3, h4 {
     color: var(--primary-color);
     font-weight: 700;
@@ -39,9 +39,21 @@ h3 { font-size: 1.3rem; margin-top: 2rem; }
 p {
     margin-bottom: 1.25rem;
     text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
-/* ── Links ────────────────────────────────────────────────────────────── */
+/* Remove indentation for the first paragraph directly following any heading in LaTeXML */
+.ltx_title + .ltx_para p,
+.ltx_title + .ltx_p,
+.ltx_chapter > .ltx_para:first-of-type p,
+.ltx_section > .ltx_para:first-of-type p,
+.ltx_subsection > .ltx_para:first-of-type p {
+    text-indent: 0;
+}
+
+
+/* ── Links ───────────────────────────────────────────────────────────────── */
 a {
     color: var(--accent-color);
     text-decoration: none;
@@ -53,7 +65,7 @@ a:hover {
     color: var(--primary-color);
 }
 
-/* ── Inhaltsverzeichnis (TOC) ─────────────────────────────────────────── */
+/* ── Inhaltsverzeichnis (TOC) ────────────────────────────────────────────── */
 .ltx_toclist {
     list-style: none;
     padding-left: 0;
@@ -68,7 +80,7 @@ a:hover {
     margin-bottom: 0.5rem;
 }
 
-/* ── Tabellen (Responsive & Longtable-Fix) ────────────────────────────── */
+/* ── Tabellen (Responsive & Longtable-Fix) ───────────────────────────────── */
 .ltx_page_main table {
     width: 100%;
     border-collapse: collapse;
@@ -99,10 +111,8 @@ tr:hover {
     background-color: #f8fafc;
 }
 
-/* ── Mathematische Formeln (MathJax Zentrierung) ───────────────────────── */
+/* ── Mathematische Formeln (MathJax Zentrierung) ─────────────────────────── */
 .ltx_equation, .ltx_equationgroup {
     margin: 1.5rem 0;
     overflow-x: auto;
 }
-
-/* ── Codeblöcke & Listings ────────────────
