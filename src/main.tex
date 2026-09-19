@@ -1,38 +1,66 @@
 \documentclass[a4paper, 12pt]{book}
 
-% Language Settings
-% \usepackage[english]{babel}     % English
-\usepackage[ngerman]{babel}     % German
-% \usepackage[brazilian]{babel}  % Brazilian Portugese
-% \usepackage[italian]{babel}     % Italian
+% ---- Language Settings -------------------------------------------------------
+\usepackage[english]{babel}     % English
+% \usepackage[ngerman]{babel}   % German
+% \usepackage[brazilian]{babel} % Brazilian Portuguese
+% \usepackage[italian]{babel}   % Italian
 
+% ---- Core Layout & Typography ------------------------------------------------
 \usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
-\usepackage{fancyhdr}
-\usepackage{microtype}
+                                % For page dimensions and margin settings
+\usepackage{fancyhdr}           % For custom headers and footers
+\usepackage{microtype}          % For improved typography, character spacing, and hyphenation
 \usepackage{amsmath, amssymb, amsthm}
-\usepackage{graphicx}
-\usepackage{xcolor}
-\usepackage{hyperref}
+                                % For advanced math environments, theorems, and symbols
+\usepackage{graphicx}           % For including external images and graphics
+\usepackage{xcolor}             % For defining and using custom colors
 
+% ---- Text Formatting, Units & Lists ------------------------------------------
+\usepackage{enumitem}           % For precise control over list spacing and numbering
+\usepackage{nicefrac}           % For readable inline fractions
+\usepackage{siunitx}            % For standardized scientific measurements and units
+\usepackage{tcolorbox}          % For custom text boxes, callouts, and modular layouts
 
-% ---- Hyperref-Setup ---------------------------------------
-\hypersetup{
-  colorlinks = true,
-  linkcolor  = blue!60!black,
-  urlcolor   = red!70!black,
+% ---- Vector Graphics -------------------------------------------------
+\usepackage{tikz}               % For generic vector graphics and diagrams
+\usepackage{fontawesome5}       % For scalable vector icons
+
+% ---- Music Notation & Layout -------------------------------------------------
+\usepackage{guitarchordschemes} % For vector guitar fretboard diagrams
+\usepackage{songs}              % For typesetting lyrics with chord anchors
+
+% ---- Hyperref & Cross-Referencing --------------------------------------------
+\usepackage{hyperref}           % For clickable links and digital bookmarks
+\usepackage{cleveref}           % Must be loaded immediately after hyperref
+
+% ---- Hyperref Setup ----------------------------------------------------------
+\hypersetup
+{
+    colorlinks = true,
+    linkcolor  = blue!60!black,
+    urlcolor   = red!70!black,
 }
 
-
-% ---- Kopf-/Fußzeilen ---------------------------------------
+% ---- Header/Footer Setup -----------------------------------------------------
+\setlength{\headheight}{15pt}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small Einführung in die Graphentheorie}
-\fancyhead[R]{\small\thepage}
-\fancyfoot[C]{\small Beispielprojekt — LaTeX Dual-Output Workflow}
 
-% ===========================================================
+% Override the default chapter and section marks to remove prefix words
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+
+% Header: Current Chapter on the left, Current Section on the right
+\fancyhead[L]{\small\leftmark}
+\fancyhead[R]{\small\rightmark}
+
+% Footer: Page number in the center
+\fancyfoot[C]{\thepage}
+
+% ==============================================================================
 \begin{document}
-% ===========================================================
+% ==============================================================================
 
 \title{Einführung in die Graphentheorie}
 \author{Beispielprojekt}
@@ -42,9 +70,9 @@
 \bigskip
 
 \chapter{Graphentheorie}
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 \section{Was ist ein Graph?}
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 
 Ein \emph{Graph} ist eine abstrakte mathematische Struktur,
 die Beziehungen zwischen Objekten modelliert.
@@ -62,7 +90,7 @@ $E = \{\{A,B\},\{A,C\},\{B,D\},\{C,D\}\}$.
 Der entstehende Graph hat 4 Knoten und 4 Kanten.
 Abbildung~\ref{fig:graph} zeigt diese Struktur.
 
-% ---- TikZ-Figur einbinden ---------------------------------
+% ---- TikZ-Figur einbinden ----------------------------------------------------
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.45\textwidth]{../figures/build/graph}
@@ -70,9 +98,9 @@ Abbildung~\ref{fig:graph} zeigt diese Struktur.
   \label{fig:graph}
 \end{figure}
 
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 \section{Grundlegende Eigenschaften}
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 
 Der \emph{Grad} $\deg(v)$ eines Knotens $v \in V$ ist die Anzahl
 der Kanten, die $v$ als Endpunkt haben:
@@ -91,15 +119,15 @@ von $v$ je genau einmal bei, also insgesamt $2|E|$-mal zur Gradsumme.
 Im obigen Beispiel: $\deg(A)=2,\;\deg(B)=2,\;\deg(C)=2,\;\deg(D)=2$,
 also $\sum \deg = 8 = 2 \cdot 4 = 2|E|$. \checkmark
 
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 \section{Algorithmen auf Graphen}
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 
 Viele klassische Algorithmen operieren auf Graphen.
 Abbildung~\ref{fig:bfs} zeigt schematisch den Ablauf einer
 \emph{Breitensuche} (BFS).
 
-% ---- TikZ-Figur einbinden ---------------------------------
+% ---- TikZ-Figur einbinden ----------------------------------------------------
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.8\textwidth]{../figures/build/bfs}
@@ -112,9 +140,9 @@ Abbildung~\ref{fig:bfs} zeigt schematisch den Ablauf einer
 Die Zeitkomplexität von BFS ist $\mathcal{O}(|V| + |E|)$,
 da jeder Knoten und jede Kante höchstens einmal besucht wird.
 
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 \section{Zusammenfassung}
-% -----------------------------------------------------------
+% ------------------------------------------------------------------------------
 
 Graphen sind ein mächtiges Werkzeug zur Modellierung vernetzter
 Strukturen. Das Handshaking-Lemma ist eine fundamentale Eigenschaft,
@@ -131,6 +159,6 @@ als auch eine HTML-Seite.
 
 Numerik ist auch spannend!
 
-% ===========================================================
+% ==============================================================================
 \end{document}
-% ===========================================================
+% ==============================================================================

@@ -1,5 +1,5 @@
 # ── Build Stage ──
-FROM docker.io/library/debian:bookworm-slim
+FROM docker.io/library/debian:trixie-slim
 
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,13 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install system-level dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
-    texlive-latex-base \
-    texlive-latex-recommended \
-    texlive-latex-extra \
-    texlive-fonts-recommended \
-    texlive-lang-german \
-    texlive-lang-english \
-    texlive-lang-european \
+    texlive-full \
     latexml \
     ghostscript \
     inkscape \
