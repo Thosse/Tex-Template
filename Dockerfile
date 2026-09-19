@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive-latex-recommended \
     texlive-latex-extra \
     texlive-fonts-recommended \
+    texlive-lang-german \
+    texlive-lang-english \
+    texlive-lang-european \
     latexml \
     ghostscript \
     inkscape \
