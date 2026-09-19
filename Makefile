@@ -84,6 +84,7 @@ html: figures | $(BUILD_DIR)/ $(HTML_DIR)/
 	@# Stage 1: Parse LaTeX into semantically structured XML.
 	@# The babel bypass option is active to prevent standard package runtime crashes.
 	$(LATEXML) \
+		--path=$(FIG_BUILD) \
 		--dest=$(BUILD_DIR)/$(MAIN_BASE).xml \
 		--log=$(BUILD_DIR)/$(MAIN_BASE).latexml.log \
 		$(SRC_DIR)/$(MAIN_BASE).tex
@@ -93,6 +94,7 @@ html: figures | $(BUILD_DIR)/ $(HTML_DIR)/
 	@# Note: --css takes a path relative to the final HTML file location.
 	$(LATEXMLPOST) \
 		--format=html5 \
+		--path=$(FIG_BUILD) \
 		--css=$(SCRIPTS_DIR)/custom.css \
 		--javascript=$(SCRIPTS_DIR)/mathjax.js \
 		--log=$(BUILD_DIR)/$(MAIN_BASE).latexmlpost.log \
