@@ -15,16 +15,14 @@
                                 % For advanced math environments, theorems, and symbols
 \usepackage{graphicx}           % For including external images and graphics
 \usepackage{xcolor}             % For defining and using custom colors
+\graphicspath{{src/figures/.build/}}
 
 % ---- Text Formatting, Units & Lists ------------------------------------------
 \usepackage{enumitem}           % For precise control over list spacing and numbering
 \usepackage{nicefrac}           % For readable inline fractions
-\usepackage{siunitx}            % For standardized scientific measurements and units
-\usepackage{tcolorbox}          % For custom text boxes, callouts, and modular layouts
 
 % ---- Vector Graphics -------------------------------------------------
 \usepackage{tikz}               % For generic vector graphics and diagrams
-\usepackage{fontawesome5}       % For scalable vector icons
 
 % ---- Music Notation & Layout -------------------------------------------------
 \usepackage{guitarchordschemes} % For vector guitar fretboard diagrams
@@ -41,6 +39,11 @@
     linkcolor  = blue!60!black,
     urlcolor   = red!70!black,
 }
+
+% ---- Forbidden Packages - Causing Issues with LateXML ------------------------
+% \usepackage{siunitx}            % For standardized scientific measurements and units
+% \usepackage{tcolorbox}          % For custom text boxes, callouts, and modular layouts
+% \usepackage{fontawesome5}       % For scalable vector icons
 
 % ---- Header/Footer Setup -----------------------------------------------------
 \setlength{\headheight}{15pt}
@@ -93,7 +96,7 @@ Abbildung~\ref{fig:graph} zeigt diese Struktur.
 % ---- TikZ-Figur einbinden ----------------------------------------------------
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.45\textwidth]{../figures/build/graph}
+  \includegraphics[width=0.45\textwidth]{graph}
   \caption{Einfacher ungerichteter Graph mit 4 Knoten.}
   \label{fig:graph}
 \end{figure}
@@ -130,7 +133,7 @@ Abbildung~\ref{fig:bfs} zeigt schematisch den Ablauf einer
 % ---- TikZ-Figur einbinden ----------------------------------------------------
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.8\textwidth]{../figures/build/bfs}
+  \includegraphics[width=0.8\textwidth]{bfs}
   \caption{Ablauf der Breitensuche (BFS).}
   \label{fig:bfs}
 \end{figure}

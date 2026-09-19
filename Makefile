@@ -7,11 +7,11 @@
 # ── Paths & Directories ──────────────────────────────────────────────────────
 # Organizing the project structure to keep source files and build artifacts separate.
 SRC_DIR     := src
-BUILD_DIR   := build
-RESULT_DIR  := res
+BUILD_DIR   := .build
+RESULT_DIR  := result
 HTML_DIR    := $(RESULT_DIR)/html
-FIG_TIKZ    := figures/tikz
-FIG_BUILD   := figures/build
+FIG_TIKZ    := src/figures/tikz
+FIG_BUILD   := src/figures/.build
 SCRIPTS_DIR := scripts
 
 # Main document entry points
@@ -87,7 +87,7 @@ html: figures | $(BUILD_DIR)/ $(HTML_DIR)/
 		--dest=$(BUILD_DIR)/$(MAIN_BASE).xml \
 		--log=$(BUILD_DIR)/$(MAIN_BASE).latexml.log \
 		$(SRC_DIR)/$(MAIN_BASE).tex
-		
+
 	@# Stage 2: Transform XML to validated HTML5 markup.
 	@# Injects custom styles and loads the CDN-backed MathJax processor for equations.
 	@# Note: --css takes a path relative to the final HTML file location.
@@ -98,7 +98,7 @@ html: figures | $(BUILD_DIR)/ $(HTML_DIR)/
 		--log=$(BUILD_DIR)/$(MAIN_BASE).latexmlpost.log \
 		--dest=$(HTML_DIR)/$(MAIN_BASE).html \
 		$(BUILD_DIR)/$(MAIN_BASE).xml
-		
+
 	@echo "  ✓ HTML generated: $(BUILD_DIR)/$(MAIN_BASE).html"
 
 # ── Continuous Automation ────────────────────────────────────────────────────
