@@ -1,6 +1,8 @@
 # LaTeX Dual-Output Workflow
 
-This project generates both a high-quality **PDF**
+This project can be imported into late projects
+as a git submodule as a **bin/** folder.
+From there, generates both a high-quality **PDF**
 and a modern, responsive **HTML5** document
 from a single unified LaTeX source file.
 
@@ -18,30 +20,31 @@ It requires Podman or Docker installed on your system.
 Build the container image via
 
 ```bash
-./bin/build.sh
+./bin/create_build_container.sh
 ```
 
 Instead of calling make directly, you may pass any make commands to the run script:
 
 ```bash
-./bin/run.sh all       # Builds figures, PDF, and HTML
-./bin/run.sh pdf       # Builds only the PDF
-./bin/run.sh clean     # Cleans the workspace
+./bin/build_document_in_container.sh all       # Builds figures, PDF, and HTML
+./bin/build_document_in_container.sh pdf       # Builds only the PDF
+./bin/build_document_in_container.sh clean     # Cleans the workspace
 ...
 ```
 
 ### Local Native Build
 If you prefer building directly on your host system,
 you can use the Makefile natively.
+Since this engine is suppoesed to be used as a submodule, specify the Makefile path:
 
 ```bash
-make              # Builds figures, PDF, and HTML
-make figures      # Builds only standalone TikZ figures (PDF + SVG)
-make pdf          # Builds only the PDF (multiple LaTeX runs)
-make html         # Builds only the HTML (via LaTeXML)
-make watch        # Auto-rebuilds on file changes (requires 'entr')
-make clean        # Removes all build artifacts and directories
-make help         # Shows an overview of all available targets
+make -f bin/Makefile              # Builds figures, PDF, and HTML
+make -f bin/Makefile figures      # Builds only standalone TikZ figures (PDF + SVG)
+make -f bin/Makefile pdf          # Builds only the PDF (multiple LaTeX runs)
+make -f bin/Makefile html         # Builds only the HTML (via LaTeXML)
+make -f bin/Makefile watch        # Auto-rebuilds on file changes (requires 'entr')
+make -f bin/Makefile clean        # Removes all build artifacts and directories
+make -f bin/Makefile help         # Shows an overview of all available targets
 ```
 
 The requirements are listed as in the Dockerfile.
@@ -50,23 +53,28 @@ The requirements are listed as in the Dockerfile.
 ## Project Structure
 
 ```
-latex-project/
-├── .build/             ← Temporary hidden build artifacts and logs
-├── bin/                ← Wrapper scripts (build.sh, detect_engine.sh, run.sh)
-├── defaults/           ← Shared configurations and web assets
-│   ├── custom.css      ← CSS styling for HTML output
-│   ├── mathjax.js      ← MathJax configuration for equations
-│   └── preamble.tex    ← Dual-build gatekeeper and package imports
-├── result/             ← Final compiled outputs
-│   ├── html/           ← Final compiled PDF output
-│   └── main.pdf        ← Final compiled PDF output
-├── src/                ← Source files
-│   ├── figures/        ← Standalone TikZ figures and build output
-│   └── main.tex        ← Main LaTeX source document
-├── .gitignore          ← Git exclusion rules
-├── Dockerfile          ← Container build definition
-├── Makefile            ← Defines the dual-output automation
-└── README.md           ← Project documentation
+host-project/
+├── bin/                            ← THIS SUBMODULE (The Build Engine)
+│   ├── .build/                     ← Temporary hidden build artifacts and logs
+│   ├── templates/                  ← Shared configurations and web assets
+│   │   ├── custom.css              ← CSS styling for HTML output
+│   │   ├── mathjax.js              ← MathJax configuration for equations
+│   │   └── preamble.tex            ← Dual-build gatekeeper and package imports
+│   ├── build_document_in_container.sh
+│   ├── create_build_container.sh
+│   ├── set_build_environment.sh
+│   ├── Dockerfile                  ← Container build definition
+│   ├── Makefile                    ← Defines the dual-output automation
+│   └── README.md                   ← Project documentation
+│
+├── result/                         ← Final compiled outputs
+│   ├── html/                       ← Final compiled HTML output
+│   └── main.pdf                    ← Final compiled PDF output
+│
+└── src/                            ← Source files (REQUIRED)
+    ├── figures/                    ← Standalone TikZ figures and build output
+    └── main.tex                    ← Main LaTeX source document (REQUIRED)
+
 ```
 
 
@@ -103,7 +111,12 @@ To include a figure, simply omit the file ending.
 The correct file will be used (svg for html and pdf for pdf).
 
 ```latex
-\includegraphics{../figures/build/graph}
+\includegraphics{graph}
+```
+
+If you use the preamble, any build figures are detected, due to
+```latex
+\graphicspath{{src/figures/.build/}}
 ```
 
 ### HTML5 Generation (LaTeXML)

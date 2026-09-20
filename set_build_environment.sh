@@ -4,6 +4,31 @@
 CONTAINER_NAME="localhost/latex-pipeline"
 
 ################################################################################
+# --- Asserts for required host project structure ---
+# Determine the host project root (one directory up from where this script lives)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Assert that the submodule is housed exactly inside a folder named 'bin'
+if [ "$(basename "$SCRIPT_DIR")" != "bin" ]; then
+    echo "Error: The build engine submodule must be placed in a directory named 'bin'." >&2
+    echo "Current location: '$SCRIPT_DIR'" >&2
+    echo "Pathing will fail otherwise. Please rename the directory to 'bin'." >&2
+    exit 1
+fi
+
+if [ ! -d "$PROJECT_ROOT/src" ]; then
+    echo "Error: Required source directory '$PROJECT_ROOT/src' not found." >&2
+    echo "Please ensure the build engine submodule is placed correctly within the host project." >&2
+    exit 1
+fi
+
+if [ ! -f "$PROJECT_ROOT/src/main.tex" ]; then
+    echo "Error: Required entry point '$PROJECT_ROOT/src/main.tex' not found." >&2
+    exit 1
+fi
+
+################################################################################
 # Check for podman first (preferred), then fallback to docker
 if command -v podman >/dev/null 2>&1; then
     ENGINE="podman"
