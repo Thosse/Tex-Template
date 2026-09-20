@@ -1,3 +1,7 @@
+# Built results (may be copied from here)
+**/.build/*
+
+# Tex: build and temporary files
 *.dvi
 *.html
 *.aux
@@ -10,5 +14,3 @@
 *.lg
 *.xref
 *.tmp
-**/.build/*
-**/result/*
