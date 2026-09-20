@@ -1,0 +1,14 @@
+*.dvi
+*.html
+*.aux
+*.log
+*.out
+*.toc
+*.4tc
+*.4ct
+*.idv
+*.lg
+*.xref
+*.tmp
+**/.build/*
+**/result/*
