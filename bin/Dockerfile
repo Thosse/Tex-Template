@@ -1,5 +1,5 @@
 # ── Build Stage ──
-FROM docker.io/library/debian:trixie-slim
+FROM docker.io/library/debian:bookworm-slim
 
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -30,5 +30,5 @@ USER latexuser
 # Copy the rest of the project files
 COPY --chown=latexuser:latexgroup . .
 
-# Default command runs the Makefile pipeline
-CMD ["make", "all"]
+# Default command runs the Makefile pipeline from the submodule
+CMD ["make", "-f", "bin/Makefile", "all"]

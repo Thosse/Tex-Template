@@ -5,10 +5,10 @@
 # exit: exit on failure
 cd "$(dirname "$0")/.." || exit 1
 
-source bin/detect_engine.sh
+source bin/set_build_environment.sh
 
 # Run the container and pass all arguments ("$@") to the build pipeline
 $ENGINE run --rm $ENGINE_SPECIFIC_FLAGS \
   --user "$TARGET_UID:$TARGET_GID" \
   -v "$(pwd)":/home/latexuser/app:Z \
-  $CONTAINER_NAME make "$@"
+  $CONTAINER_NAME make -f bin/Makefile "$@"

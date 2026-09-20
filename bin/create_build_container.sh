@@ -5,7 +5,7 @@
 # exit: exit on failure
 cd "$(dirname "$0")/.." || exit 1
 
-source bin/detect_engine.sh
+source bin/set_build_environment.sh
 
-# Build the Docker image using the Dockerfile in the root folder
-$ENGINE build -t $CONTAINER_NAME .
+# Build the Docker image using the Dockerfile inside bin/ but context is root (.)
+$ENGINE build -f bin/Dockerfile -t $CONTAINER_NAME .

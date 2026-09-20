@@ -7,12 +7,12 @@
 # ── Paths & Directories ──────────────────────────────────────────────────────
 # Organizing the project structure to keep source files and build artifacts separate.
 SRC_DIR     := src
-BUILD_DIR   := .build
+BUILD_DIR   := bin/.build
 RESULT_DIR  := result
 HTML_DIR    := $(RESULT_DIR)/html
 FIG_TIKZ    := src/figures/tikz
 FIG_BUILD   := src/figures/.build
-SCRIPTS_DIR := defaults
+SCRIPTS_DIR := bin/templates
 
 # Main document entry points
 
@@ -107,7 +107,7 @@ html: figures | $(BUILD_DIR)/ $(HTML_DIR)/
 # Development loop using 'entr'. Automatically rebuilds assets on source changes.
 watch:
 	@echo "  Watching $(SRC_DIR)/ and $(FIG_TIKZ)/ — Press Ctrl+C to stop"
-	find $(SRC_DIR) $(FIG_TIKZ) -name '*.tex' | entr -c make all
+	find $(SRC_DIR) $(FIG_TIKZ) -name '*.tex' | entr -c make -f bin/Makefile all
 
 # ── Cleanup Operations ───────────────────────────────────────────────────────
 # Deletes individual standalone graphics build directories.
